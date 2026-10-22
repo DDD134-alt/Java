@@ -12,6 +12,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController             // RESTful API(웹 표준 아키텍처)를 지원하는 컨트롤러 (직렬화(자바→JSON)/역직렬(JSON→자바)화 담당)
 @RequestMapping("/auth") // http://localhost:8111/auth, (auth: Authentication(인증) 또는 Authorization(인가) 관련 기능을 모아둔 경로)
 @RequiredArgsConstructor    // 생성자를 통한 Dependency Injection(디펜던시 인젝션, 의존성 주입) 자동 생성
+// 프론트엔드 (React): http://localhost:3000 (포트 번호 3000)
+// 백엔드 (Spring Boot): http://localhost:8111 (포트 번호 8111)
+// 통신하는 주소가 다르면 브라우저는 해킹으로 여겨 데이터를 차단함으로써
+// CORS(Cross-Origin Resource Sharing, 교차 출처 자원 공유) 에러 발생.
+// 이를 막기 위해 @CrossOrigin으로 보안정책을 일시적으로 해제해 두 주소가 통신 할 수 있도록 하는 것
 @CrossOrigin(origins = "http://localhost:3000")
  public class AuthController {
     private final AuthService authService; // 생성자를 통한 의존성 주입
