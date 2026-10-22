@@ -1,0 +1,13 @@
+$kind: http-request
+url: http://localhost:8111/member/modify
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"email\" : \"ccc@hu.com\",\r
+
+    \    \"image\" : \"1000\"\r
+
+    }"
+order: 3061112416957065

@@ -1,0 +1,7 @@
+$kind: http-request
+url: http://localhost:8111/comment/modify/1
+method: PUT
+body:
+  type: json
+  content: ""
+order: 4197012581391245

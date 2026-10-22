@@ -1,0 +1,15 @@
+$kind: http-request
+url: http://localhost:8111/comment/write
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"email\": \"123@hu.com\",\r
+
+    \    \"boardId\": \"1\",\r
+
+    \    \"content\": \"마자마자바자바~!\"\r
+
+    }"
+order: 4197012581390245

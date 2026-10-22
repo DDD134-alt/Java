@@ -1,0 +1,15 @@
+$kind: http-request
+url: http://localhost:8111/board/1
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"email\": \"123@hu.com\",\r
+
+    \    \"title\": \"어쩌고저쩌고\",\r
+
+    \    \"content\": \"자바 넘모넘모 좋은 거시와요~~~\"\r
+
+    }"
+order: 4197012581387245

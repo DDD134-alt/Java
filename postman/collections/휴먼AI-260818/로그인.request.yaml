@@ -1,0 +1,13 @@
+$kind: http-request
+url: http://localhost:8111/auth/login
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"pwd\" : \"1234\",\r
+
+    \    \"email\" : \"abc\"\r
+
+    }"
+order: 2596854848187487

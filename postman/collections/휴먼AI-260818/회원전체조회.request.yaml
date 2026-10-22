@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8111/member/list
+method: GET
+order: 3057612404379923

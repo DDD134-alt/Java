@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8111/member/abc
+method: DELETE
+order: 3647683076549648

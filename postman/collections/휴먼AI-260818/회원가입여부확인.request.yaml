@@ -1,0 +1,4 @@
+$kind: http-request
+url: http://localhost:8111/auth/exists/123@123.123
+method: GET
+order: 1791360283339
