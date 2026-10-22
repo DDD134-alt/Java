@@ -15,6 +15,7 @@ import java.util.List;
 @RestController              // Restfull API를 지원하는 컨트롤러(직렬화/역직렬화) 기능을 가지고 있음
 @RequestMapping("/board") // http://localhost:8111/board
 @RequiredArgsConstructor     // 생성자를 통한 의존성 주입을 자동 생성
+@CrossOrigin(origins = "http://localhost:3000")
 public class BoardController {
     private final BoardService boardService;
 
@@ -66,9 +67,9 @@ public class BoardController {
     }
 
     // 게시글 좋아요
-    @PostMapping("/{id}/like")
-    public ResponseEntity<Boolean> boardLike(@PathVariable id, @RequestParam email) {
-        boolean result = boardService.toggleLike(id, email);
-        return ResponseEntity.ok(result);
-    }
+//    @PostMapping("/{id}/like")
+//    public ResponseEntity<Boolean> boardLike(@PathVariable id, @RequestParam email) {
+//        boolean result = boardService.toggleLike(id, email);
+//        return ResponseEntity.ok(result);
+//    }
 }

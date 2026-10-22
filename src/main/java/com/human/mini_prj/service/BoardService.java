@@ -132,36 +132,37 @@ public class BoardService {
     }
 
     // 게시글 좋아요
-    public boolean toggleLike(Long boardId, String email) {
-        // 1.회원이 실제로 존재하는지 엔티티 조회
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        if (optionalMember.isEmpty()) {
-            throw new IllegalArgumentException("회원이 존재하지 않습니다");
-        }
+//    public boolean toggleLike(Long boardId, String email) {
+//        // 1.회원이 실제로 존재하는지 엔티티 조회
+//        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+//        if (optionalMember.isEmpty()) {
+//            throw new IllegalArgumentException("회원이 존재하지 않습니다");
+//        }
+//
+//        // 2.게시글이 실제로 존재하는지 엔티티 조회
+//        Optional<Board> optionalBoard = boardRepository.findById(boardId);
+//        if (optionalBoard.isEmpty()) {
+//            throw new IllegalArgumentException("게시글이 존재하지 않습니다");
+//        }
+//
+//        // 3.해당 회원이 이 게시글에 이미 좋아요를 눌렀는지 확인
+//        Optional<BoardLike> existingLike = BoardRepository.findByBoard_IdAndMember_Email(boardId, memberEmail);
+//
+//        if (existingLike.isPresent()) {
+//            // 3-1. 이미 좋아요를 누른 상태라면 -> 좋아요 취소 (데이터 삭제)
+//            BoardRepository.delete(existingLike.get());
+//            return false; // 좋아요 취소됨을 알림
+//        } else {
+//            // 3-2. 아직 좋아요를 안 누른 상태라면 -> 좋아요 추가 (데이터 저장)
+//            BoardLike boardLike = new BoardLike();
+//            boardLike.setBoard(board);
+//            boardLike.setMember(member);
+//
+//            BoardRepository.save(boardLike);
+//            return true; // 좋아요가 추가됨을 알림
+//        }
+//    }
 
-        // 2.게시글이 실제로 존재하는지 엔티티 조회
-        Optional<Board> optionalBoard = boardRepository.findById(boardId);
-        if (optionalBoard.isEmpty()) {
-            throw new IllegalArgumentException("게시글이 존재하지 않습니다");
-        }
-
-        // 3.해당 회원이 이 게시글에 이미 좋아요를 눌렀는지 확인
-        Optional<BoardLike> existingLike = BoardRepository.findByBoard_IdAndMember_Email(boardId, memberEmail);
-
-        if (existingLike.isPresent()) {
-            // 3-1. 이미 좋아요를 누른 상태라면 -> 좋아요 취소 (데이터 삭제)
-            BoardRepository.delete(existingLike.get());
-            return false; // 좋아요 취소됨을 알림
-        } else {
-            // 3-2. 아직 좋아요를 안 누른 상태라면 -> 좋아요 추가 (데이터 저장)
-            BoardLike boardLike = new BoardLike();
-            boardLike.setBoard(board);
-            boardLike.setMember(member);
-
-            BoardRepository.save(boardLike);
-            return true; // 좋아요가 추가됨을 알림
-        }
-    }
 
     // Entity -> Dto
     private BoardResDto toDto(Board board) {

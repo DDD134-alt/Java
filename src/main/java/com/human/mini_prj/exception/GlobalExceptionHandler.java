@@ -55,11 +55,11 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse("UNKNOWN", "알 수 없는 서버 오류"));
     }
 
-    @ExceptionHandler(IllegalAccessException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
-        log.warn("잘못된 요청: {}", ex.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)   // 404
-                .body(new ErrorResponse("NOT_FOUND", ex.getMessage()));
-    }
+//    @ExceptionHandler(IllegalAccessException.class)
+//    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
+//        log.warn("잘못된 요청: {}", ex.getMessage());
+//        return ResponseEntity
+//                .status(HttpStatus.NOT_FOUND)   // 404
+//                .body(new ErrorResponse("NOT_FOUND", ex.getMessage()));
+//    }
 }

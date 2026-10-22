@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController             // RESTful API(웹 표준 아키텍처)를 지원하는 컨트롤러 (직렬화(자바→JSON)/역직렬(JSON→자바)화 담당)
 @RequestMapping("/auth") // http://localhost:8111/auth, (auth: Authentication(인증) 또는 Authorization(인가) 관련 기능을 모아둔 경로)
 @RequiredArgsConstructor    // 생성자를 통한 Dependency Injection(디펜던시 인젝션, 의존성 주입) 자동 생성
+@CrossOrigin(origins = "http://localhost:3000")
  public class AuthController {
     private final AuthService authService; // 생성자를 통한 의존성 주입
 
