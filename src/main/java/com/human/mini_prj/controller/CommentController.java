@@ -44,8 +44,8 @@ public class CommentController {
     // 댓글 삭제
     @DeleteMapping("/delete/{id}")
     // @RequestParam(쿼리 파라미터/쿼리 스트링) : ?email=123@naver.com 처럼 옵션, 또는 필터를 걸어야 할때 사용
-    public ResponseEntity<Boolean> commentDelete(@PathVariable Long id, @RequestParam String email) {
-        boolean result = commentService.deleteComment(id, email);
+    public ResponseEntity<Boolean> commentDelete(@PathVariable Long commentId) {
+        boolean result = commentService.deleteComment(commentId);
         return ResponseEntity.ok(result);
     }
 }

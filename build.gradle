@@ -29,6 +29,18 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
+
+	// JWT 토큰 인증 의존성과 설정
+	// Spring Security 인증 및 보안 기능, JWT(출입증)의 출입을 관리하는 보안 시스템
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	// JWT 생성 및 검증을 위한 API
+	implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+	// JWT 기능의 실제 구현
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+	// JWT 데이터를 JSON으로 변환
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+	// Spring Security 관련 테스트 지원
+	testImplementation 'org.springframework.security:spring-security-test'
 }
 
 tasks.named('test') {

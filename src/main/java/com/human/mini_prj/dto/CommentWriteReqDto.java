@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CommentWriteReqDto {
-    private String email;
+    // private String email;
     private Long boardId;
     private String content;
 }

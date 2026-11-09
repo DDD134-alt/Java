@@ -1,19 +1,18 @@
 package com.human.mini_prj.service;
 
-import com.human.mini_prj.dto.BoardLikeResDto;
 import com.human.mini_prj.dto.BoardResDto;
 import com.human.mini_prj.dto.BoardWriteReqDto;
 import com.human.mini_prj.dto.PageResDto;
 import com.human.mini_prj.entity.Board;
-import com.human.mini_prj.entity.BoardLike;
 import com.human.mini_prj.entity.Member;
 import com.human.mini_prj.repository.BoardRepository;
 import com.human.mini_prj.repository.MemberRepository;
+import com.human.mini_prj.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,15 +51,18 @@ public class BoardService {
     // 게시글 작성
     public boolean writeBoard(BoardWriteReqDto dto) {
         try {
-            // 작성자 조회
-            Optional<Member> member = memberRepository.findByEmail(dto.getEmail());
-            if (member.isEmpty()) {
-                throw new IllegalArgumentException("해당 회원이 존재하지 않습니다: " + dto.getEmail());
-            }
+            // // 작성자 조회
+            // Optional<Member> member = memberRepository.findByEmail(dto.getEmail());
+            // if (member.isEmpty()) {
+            //     throw new IllegalArgumentException("해당 회원이 존재하지 않습니다: " + dto.getEmail());
+            // }
+            String email = SecurityUtil.currentEmail();          // 토큰의 이메일
+            Member member = memberRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다: " + email));
             Board board = new Board();
             board.setTitle(dto.getTitle());
             board.setContent(dto.getContent());
-            board.setMember(member.get());
+            board.setMember(member);
             boardRepository.save(board); // INSERT 와 동일
             return true;
 
@@ -73,21 +75,27 @@ public class BoardService {
     // 게시글 수정
     public boolean updateBoard(Long id, BoardWriteReqDto dto) {
         try {
-            // 1. 수정할 게시글이 실제로 존재하는지 조회
-            Optional<Board> optionalBoard = boardRepository.findById(id);
-            if (optionalBoard.isEmpty()) {
-                throw new IllegalArgumentException(id + "번 게시글이 존재하지 않습니다.");
-            }
-            Board board = optionalBoard.get();
+//            // 1. 수정할 게시글이 실제로 존재하는지 조회
+//            Optional<Board> optionalBoard = boardRepository.findById(id);
+//            if (optionalBoard.isEmpty()) {
+//                throw new IllegalArgumentException(id + "번 게시글이 존재하지 않습니다.");
+//            }
+//            Board board = optionalBoard.get();
+//
+//            // 2. 작성자 본인 확인 (프론트엔드에서 전달받은 이메일과 기존 게시글 작성자 이메일 비교)
+//            Member member = board.getMember();
+//            String email = member.getEmail();
+//            if (!email.equals(dto.getEmail())) {
+//                throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
+//            }
+//
+//            // 3. 제목과 내용 변경 후 저장
+//            board.setTitle(dto.getTitle());
+//            board.setContent(dto.getContent());
 
-            // 2. 작성자 본인 확인 (프론트엔드에서 전달받은 이메일과 기존 게시글 작성자 이메일 비교)
-            Member member = board.getMember();
-            String email = member.getEmail();
-            if (!email.equals(dto.getEmail())) {
-                throw new IllegalArgumentException("작성자만 수정할 수 있습니다.");
-            }
-
-            // 3. 제목과 내용 변경 후 저장
+            Board board = boardRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다: " + id));
+            checkWriter(board.getMember());
             board.setTitle(dto.getTitle());
             board.setContent(dto.getContent());
             return true;
@@ -98,26 +106,21 @@ public class BoardService {
         }
     }
 
-    // 게시글 삭제
+    // 게시글 삭제: 게시글 id로 글 삭제
     public boolean deleteBoard(Long id) {
         try {
-            Optional<Board> optionalBoard = boardRepository.findById(id);
-            if (optionalBoard.isEmpty()) {
-                throw new IllegalArgumentException("게시글이 존재하지 않습니다.");
-            }
-
-            Board board = optionalBoard.get();
-            // 삭제는 날려줘야 함
+            Board board = boardRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다.: " + id));
+            checkWriter(board.getMember());
             boardRepository.delete(board);
             return true;
-
         } catch (Exception e) {
-            log.error("게시글 삭제 시 오류 발생 : {}", e.getMessage());
+            log.error("게시글 삭제 시 오류 발생: {}", e.getMessage());
             return false;
         }
     }
 
-    // 게시글 목록 페이지 페이지네이션
+    // 게시글 목록 페이지 페이지네이션 (최신순)
     public PageResDto<BoardResDto> getBoardPage(int page, int size) {
         // 1. 페이징 및 정렬 조건 객체 생성
         // - PageRequest.of : 페이지번호, 페이지크기, 정렬, 참고로 페이지번호는 0부터 시작 (0 = 첫 페이지)
@@ -129,6 +132,21 @@ public class BoardService {
         Page<BoardResDto> boardResDtoPage = boardPage.map(this::toDto);
         // 4. 공통 페이지 응답 DTO로 감싸서 반환
         return new PageResDto<>(boardResDtoPage);
+    }
+
+    // 제목 또는 내용에 키워드 포함
+    public PageResDto<BoardResDto> searchBoard(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("rgeTime").descending());
+        Page<Board> boardPage = boardRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable);
+        Page<BoardResDto> boardResDtoPage = boardPage.map(this::toDto);
+        return new PageResDto<>(boardResDtoPage);
+    }
+
+    // 로그인 사용자 == 작성자 확인
+    private void checkWriter(Member writer) {
+        if (!writer.getEmail().equals(SecurityUtil.currentEmail())) {
+            throw new IllegalArgumentException("작성자만 수정/삭제할 수 있습니다.");
+        }
     }
 
     // 게시글 좋아요

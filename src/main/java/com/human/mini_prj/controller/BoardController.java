@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j                       // Log 메시지 작성 용도
-@RestController              // Restfull API를 지원하는 컨트롤러(직렬화/역직렬화) 기능을 가지고 있음
-@RequestMapping("/board") // http://localhost:8111/board
-@RequiredArgsConstructor     // 생성자를 통한 의존성 주입을 자동 생성
+@Slf4j                     // Log 메시지 작성 용도
+@RestController            // Restfull API를 지원하는 컨트롤러(직렬화/역직렬화) 기능을 가지고 있음
+@RequestMapping("/board")  // http://localhost:8111/board
+@RequiredArgsConstructor   // 생성자를 통한 의존성 주입을 자동 생성
 @CrossOrigin(origins = "http://localhost:3000")
 public class BoardController {
-    private final BoardService boardService;
+    private final BoardService boardService;  // 의존성 주입
 
     // 게시글 전체 조회
     @GetMapping("/list")
@@ -64,6 +64,17 @@ public class BoardController {
     ) {
         // page는 0부터 시작하기 때문에 검색할때 편하도록 page에 -1을 넣어둠
         return ResponseEntity.ok(boardService.getBoardPage(page-1, size));
+    }
+
+    // 게시글 검색
+    // GET http://localhost:8111/board/search?keyword=스프링&type=all&page=0&size=10
+    @GetMapping("/search")
+    public ResponseEntity<PageResDto<BoardResDto>> boardSearch(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(boardService.searchBoard(keyword, page, size));
     }
 
     // 게시글 좋아요

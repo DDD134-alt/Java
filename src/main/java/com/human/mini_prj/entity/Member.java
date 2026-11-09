@@ -2,11 +2,13 @@ package com.human.mini_prj.entity;
 
 // 에티티(entity) : 데이터베이스 테이블과 매핑되는 설계도/클래스
 
+import com.human.mini_prj.constant.Authority;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 import java.time.LocalDateTime;
 
 @Entity                    // @Entity는 SQL의 Table이라고도 함, 행은 객체(new), 열은 인스턴스 필드, 퀴리분은 메서드 이름
@@ -36,8 +38,13 @@ public class Member {
 
     private LocalDateTime regDate; // java.util.Date 대신 java8 날짜/시간 API 사용
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Authority authority;
+
     @PrePersist               // PrePersist : DB에 INSERT 되기 전에 실행하겠다는 메서드
     public void prePersist() {
         this.regDate = LocalDateTime.now(); // 현재 날짜 및 시간으로 초기화
+        this.authority = Authority.ROLE_USER;
     }
 }
