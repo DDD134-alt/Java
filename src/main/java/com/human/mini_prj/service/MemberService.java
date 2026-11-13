@@ -5,6 +5,7 @@ import com.human.mini_prj.dto.MemberUpdateReqDto;
 import com.human.mini_prj.dto.PageResDto;
 import com.human.mini_prj.entity.Member;
 import com.human.mini_prj.repository.MemberRepository;
+import com.human.mini_prj.repository.RefreshTokenRepository;
 import com.human.mini_prj.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor  // 생성자를 통한 의존성 주입을 자동으로 만들어 줌
 public class MemberService {
     private final MemberRepository memberRepository;  // MemberRepository를 의존성 주입 받음
+    private final RefreshTokenRepository refreshTokenRepository;
 
     // 회원 전체 조회
     @Transactional(readOnly = true)  // 조회 전용: 변경 감지(스냅샷) 생략 → 성능 이점
@@ -67,6 +69,7 @@ public class MemberService {
             }
             Member member = memberRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다: " + email));
+            refreshTokenRepository.deleteByMember(member);
             memberRepository.delete(member);
             return true;
         } catch (Exception e) {

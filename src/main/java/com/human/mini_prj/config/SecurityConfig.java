@@ -24,7 +24,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-// URL 권한과 CORS
+// 콘피그 : 컨트롤러/핸들러에 들어가기 직전 접근허용 군간
 public class SecurityConfig {
     private final TokenProvider tokenProvider;
 
@@ -40,12 +40,13 @@ public class SecurityConfig {
                         .authenticationEntryPoint((req, res, ex) -> res.sendError(401, "인증 필요"))
                         .accessDeniedHandler((req, res, ex) -> res.sendError(403, "권한 없음")))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()   // CORS preflight
-                        .requestMatchers("/error").permitAll()                   // sendError 포워드
-                        .requestMatchers("/auth/**").permitAll()                 // 가입·로그인·중복확인
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // CORS preflight
+                        .requestMatchers("/error").permitAll()                  // sendError 포워드
+                        .requestMatchers("/auth/**").permitAll()                // 가입·로그인·중복확인
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/we/**","/chat/**").permitAll()       // 채팅은 JWT 제외 (자꾸 물어보면 번거로우니까)
                         .requestMatchers(HttpMethod.GET, "/board/**", "/comment/**").permitAll() // 목록·상세 조회
-                        .anyRequest().authenticated())                           // 글쓰기·수정·삭제·회원 API
+                        .anyRequest().authenticated())                                   // 글쓰기·수정·삭제·회원 API
                 .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

@@ -1,5 +1,6 @@
 package com.human.mini_prj.repository;
 
+import com.human.mini_prj.constant.Provider;
 import com.human.mini_prj.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     // null이 떠버려도 에러가 나지 않도록 Optional으로 래핑
     // SQL ; SELECT count(*) FROM member WHERE email = ? 랑 같은 뜻
     boolean existsByEmail(String email);
+
+    Optional<Member> findByProviderAndProviderId(Provider provider, String providerId);
 
     // exists + Email : Email 요거는 member에 있는 목록을 기입해야하고 카멜 표기법에 맞춰 작성해야 한다. 안그럼 애러남
     // SQL : SELECT * FROM member WHERE email = ? and pwd = ? 랑 같은 뜻

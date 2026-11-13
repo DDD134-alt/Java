@@ -3,6 +3,7 @@ package com.human.mini_prj.entity;
 // 에티티(entity) : 데이터베이스 테이블과 매핑되는 설계도/클래스
 
 import com.human.mini_prj.constant.Authority;
+import com.human.mini_prj.constant.Provider;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,15 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Authority authority;
+
+    // 가입경로
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private Provider provider;
+
+    // 카카오 회원번호 (카카오 회원 식별)
+    @Column(length = 100)
+    private String providerId;
 
     @PrePersist               // PrePersist : DB에 INSERT 되기 전에 실행하겠다는 메서드
     public void prePersist() {

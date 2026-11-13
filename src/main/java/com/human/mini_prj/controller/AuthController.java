@@ -3,6 +3,7 @@ package com.human.mini_prj.controller;
 import com.human.mini_prj.dto.LoginReqDto;
 import com.human.mini_prj.dto.SignUpReqDto;
 import com.human.mini_prj.dto.TokenDto;
+import com.human.mini_prj.security.SecurityUtil;
 import com.human.mini_prj.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 // 이를 막기 위해 @CrossOrigin으로 보안정책을 일시적으로 해제해 두 주소가 통신 할 수 있도록 하는 것
 @CrossOrigin(origins = "http://localhost:3000")
 
- public class AuthController {
+public class AuthController {
     private final AuthService authService; // 생성자를 통한 의존성 주입
 
     // 회원 가입 여부 확인
@@ -44,5 +45,18 @@ import org.springframework.web.bind.annotation.*;
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody LoginReqDto dto) {
         return ResponseEntity.ok(authService.login(dto.getEmail(), dto.getPwd()));
+    }
+
+    // 재발급
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestBody LoginReqDto dto) {
+        return ResponseEntity.ok(authService.reissue(dto.getEmail()));
+    }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        authService.logout(SecurityUtil.currentEmail());
+        return ResponseEntity.noContent().build();
     }
 }
